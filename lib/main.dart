@@ -21,6 +21,8 @@ import 'screens/admin/add_product.dart';
 import 'screens/admin/edit_product.dart';
 import 'screens/cart_page.dart';
 import 'utils/constants.dart';
+import 'screens/admin/pos_page.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -108,6 +110,8 @@ class MyApp extends StatelessWidget {
           '/orders': (c) => const OrdersPage(),
           '/profile': (c) => const ProfilePage(),
           '/settings': (c) => const SettingsPage(),
+          '/admin/pos': (c) => const PosPage(),
+
         },
       ),
     );

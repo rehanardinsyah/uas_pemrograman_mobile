@@ -6,7 +6,6 @@ import '../../providers/product_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/product_model.dart';
 import '../../utils/formatters.dart';
-import '../../widgets/product_card.dart';
 
 class HomeAdmin extends StatefulWidget {
   const HomeAdmin({super.key});
@@ -59,11 +58,25 @@ class _HomeAdminState extends State<HomeAdmin> {
                 ),
               ),
             ),
+
+            // ===== DASHBOARD =====
             ListTile(
               leading: const Icon(Icons.dashboard),
               title: const Text('Dashboard'),
               onTap: () => Navigator.pop(context),
             ),
+
+            // ===== POS =====
+            ListTile(
+              leading: const Icon(Icons.point_of_sale),
+              title: const Text('POS / Kasir'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/admin/pos');
+              },
+            ),
+
+            // ===== TAMBAH PRODUK =====
             ListTile(
               leading: const Icon(Icons.add),
               title: const Text('Tambah Produk'),
@@ -72,7 +85,10 @@ class _HomeAdminState extends State<HomeAdmin> {
                 Navigator.pushNamed(context, '/admin/add');
               },
             ),
+
             const Divider(),
+
+            // ===== LOGOUT =====
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('Logout'),
@@ -88,10 +104,12 @@ class _HomeAdminState extends State<HomeAdmin> {
           ],
         ),
       ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.pushNamed(context, '/admin/add'),
         child: const Icon(Icons.add),
       ),
+
       body: Column(
         children: [
           _buildStats(provider),
@@ -108,7 +126,7 @@ class _HomeAdminState extends State<HomeAdmin> {
               ),
               itemCount: products.length,
               itemBuilder: (c, i) =>
-                  _buildCard(context, products[i], provider.query),
+                  _buildCard(context, products[i]),
             ),
           ),
         ],
@@ -116,6 +134,9 @@ class _HomeAdminState extends State<HomeAdmin> {
     );
   }
 
+  // =============================
+  // STATISTIK
+  // =============================
   Widget _buildStats(ProductProvider provider) {
     return Padding(
       padding: const EdgeInsets.all(12),
@@ -143,9 +164,13 @@ class _HomeAdminState extends State<HomeAdmin> {
             children: [
               Text(title, style: const TextStyle(fontSize: 12)),
               const SizedBox(height: 4),
-              Text(value,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold)),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ],
           ),
         ),
@@ -153,6 +178,9 @@ class _HomeAdminState extends State<HomeAdmin> {
     );
   }
 
+  // =============================
+  // SEARCH
+  // =============================
   Widget _buildSearch(ProductProvider provider) {
     return Padding(
       padding: const EdgeInsets.all(12),
@@ -172,11 +200,14 @@ class _HomeAdminState extends State<HomeAdmin> {
               : null,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         ),
-        onChanged: (v) => _onSearchChanged(v, (q) => provider.setQuery(q)),
+        onChanged: (v) => _onSearchChanged(v, provider.setQuery),
       ),
     );
   }
 
+  // =============================
+  // FILTER
+  // =============================
   Widget _buildFilter(ProductProvider provider) {
     return SizedBox(
       height: 48,
@@ -203,10 +234,10 @@ class _HomeAdminState extends State<HomeAdmin> {
     );
   }
 
-  /// =============================
-  /// CARD PRODUK (FIX IMAGE)
-  /// =============================
-  Widget _buildCard(BuildContext context, Product p, String q) {
+  // =============================
+  // CARD PRODUK
+  // =============================
+  Widget _buildCard(BuildContext context, Product p) {
     return Card(
       elevation: 2,
       child: Padding(
@@ -252,15 +283,14 @@ class _HomeAdminState extends State<HomeAdmin> {
     );
   }
 
-  /// =============================
-  /// IMAGE AMAN WEB
-  /// =============================
+  // =============================
+  // IMAGE AMAN (ASSET / URL)
+  // =============================
   Widget _buildProductImage(Product p) {
     if (p.imagePath != null && p.imagePath!.isNotEmpty) {
       return Image.asset(
         p.imagePath!,
         fit: BoxFit.cover,
-        width: double.infinity,
         errorBuilder: (_, __, ___) =>
             const Center(child: Icon(Icons.broken_image)),
       );
@@ -270,7 +300,6 @@ class _HomeAdminState extends State<HomeAdmin> {
       return Image.network(
         p.imageUrl!,
         fit: BoxFit.cover,
-        width: double.infinity,
         errorBuilder: (_, __, ___) =>
             const Center(child: Icon(Icons.broken_image)),
       );
